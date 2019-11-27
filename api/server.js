@@ -1,12 +1,12 @@
 import { ServerConfig } from "./config";
-// import { contacts, groups } from "./routes";
+import { contacts, groups } from "./routes";
 
 async function main() {
   const PORT = process.env.PORT || 3000;
   const server = new ServerConfig({
-    port: PORT
+    port: PORT,
     // middleware: [],
-    // routers: [contacts, groups]
+    routers: [contacts, groups]
   });
 
   server.listen();
