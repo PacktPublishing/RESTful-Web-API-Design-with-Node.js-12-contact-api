@@ -1,0 +1,41 @@
+{
+  "name": "contact_api",
+  "version": "1.0.0",
+  "description": "a contact REST API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node -r esm .",
+    "start:prod": "pm2-runtime start ecosystem.config.js --env production",
+    "start:dev": "NODE_ENV=development node -r esm ./node_modules/nodemon/bin/nodemon.js .",
+    "debug": "DEBUG=* node -r esm .",
+    "test": "mocha ./test/*",
+    "docker:build": "sudo docker build . -t"
+  },
+  "author": "Florian GOTO",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "express-basic-auth": "^1.2.0",
+    "helmet": "^3.21.2"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/faker": "^4.1.7",
+    "@types/node": "^12.12.12",
+    "eslint": "^6.7.0",
+    "faker": "^4.1.0",
+    "mocha": "^6.2.2",
+    "nodemon": "^2.0.1",
+    "supertest": "^4.0.2"
+  },
+  "mocha": {
+    "require": [
+      "esm"
+    ]
+  }
+}
