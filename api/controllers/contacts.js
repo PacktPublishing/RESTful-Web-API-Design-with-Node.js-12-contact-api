@@ -3,6 +3,10 @@ import { random } from "faker";
 
 const getContacts = async (req, res) => {
   res.format({
+    json: function() {
+      res.json([...fakeContacts]);
+    },
+    
     text: function() {
       const toto = [...fakeContacts.values()]
         .map(contact => Object.entries(contact).map(t => t.join(":")))
@@ -35,10 +39,6 @@ const getContacts = async (req, res) => {
       });
 
       res.send(html.join("\n"));
-    },
-
-    json: function() {
-      res.json([...fakeContacts]);
     }
   });
 };
