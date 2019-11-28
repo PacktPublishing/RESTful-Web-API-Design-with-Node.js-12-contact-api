@@ -12,10 +12,10 @@ export class ServerConfig {
     this.app = Express();
     this.app.set("env", process.env.NODE_ENV);
     this.app.set("port", port);
-    this.registerCORSMiddleware();
-    this.registerHelmetMiddleware();
-    this.registerBasicAuthMiddleware();
-    this.registerJSONMiddleware();
+    this.registerCORSMiddleware()
+      .registerHelmetMiddleware()
+      .registerBasicAuthMiddleware()
+      .registerJSONMiddleware();
 
     middlewares &&
       middlewares.forEach(mdlw => {

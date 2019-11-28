@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { fakeContacts } from "../utils";
+
 import {
   getContacts,
   getContact,

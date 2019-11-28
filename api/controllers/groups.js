@@ -11,7 +11,7 @@ const getGroupsForContact = async (req, res, next) => {
 
   fakeContacts.has(contactId)
     ? res.json(fakeContacts.get(contactId).groups)
-    : next(await errorHandler("Unknown contact", 422));
+    : next(errorHandler("Unknown contact", 422));
 };
 
 export { getGroups, getGroupsForContact };

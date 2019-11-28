@@ -24,9 +24,11 @@
     "test": "test"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
     "@types/faker": "^4.1.7",
-    "@types/node": "^12.12.12",
+    "@types/helmet": "0.0.45",
+    "@types/node": "^12.12.14",
     "eslint": "^6.7.0",
     "faker": "^4.1.0",
     "mocha": "^6.2.2",
