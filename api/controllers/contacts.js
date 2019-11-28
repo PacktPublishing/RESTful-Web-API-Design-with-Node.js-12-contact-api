@@ -2,7 +2,45 @@ import { fakeContacts, errorHandler } from "../utils";
 import { random } from "faker";
 
 const getContacts = async (req, res) => {
-  res.json([...fakeContacts]);
+  res.format({
+    text: function() {
+      const toto = [...fakeContacts.values()]
+        .map(contact => Object.entries(contact).map(t => t.join(":")))
+        .join("\n\n ==========================>>    ");
+      res.send(toto);
+    },
+
+    html: function() {
+      const html = [
+        `<table style="border: 1px solid black;">`,
+        `<th style="border: 1px solid black; background:red;">Contact ID</th>
+        <th style="border: 1px solid black; background:black; color:white;">Contact Data</th>
+        `
+      ];
+
+      [...fakeContacts].forEach(([id, contact]) => {
+        html.push(`
+            <tr style="border: 1px solid black;">
+            <td style="border: 1px solid black; background:yellow;">${id}</td>
+            <td style="border: 1px solid black;">${Object.entries(contact)
+              .map(([key, value]) => {
+                return `<p><b>${key}</b>: ${JSON.stringify(value).replace(
+                  /"/g,
+                  ""
+                )}</p>`;
+              })
+              .join("\n")}</td>
+            </tr>
+          `);
+      });
+
+      res.send(html.join("\n"));
+    },
+
+    json: function() {
+      res.json([...fakeContacts]);
+    }
+  });
 };
 
 const getContact = async (req, res, next) => {
