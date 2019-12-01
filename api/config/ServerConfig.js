@@ -2,6 +2,7 @@ import Express, { Router } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import basicAuth from "express-basic-auth";
+import { MongoDao } from "./db";
 
 export class ServerConfig {
   #userAccounts = {
@@ -23,9 +24,6 @@ export class ServerConfig {
       });
 
     this.app.get("/", (req, res, next) => {
-      // const er = new Error("my bad");
-      // er.statusCode = 501;
-      // throw er;
       res.json({
         message: "Server working"
       });
@@ -116,7 +114,7 @@ export class ServerConfig {
   registerErrorHandlingMiddleware() {
     this.app.get("env") === "development"
       ? this.registerMiddleware(
-          ({ statusCode, message, stack }, req, res, next) => {
+          ({ statusCode = 500, message, stack }, req, res, next) => {
             res.status(statusCode);
             res.json({
               statusCode,
@@ -132,9 +130,14 @@ export class ServerConfig {
     return this;
   }
 
-  listen() {
-    this.app.listen(this.port, () => {
-      console.log(`Listening on port: ${this.port}`);
-    });
+  async listen() {
+    try {
+      await new MongoDao("", "contactsdb");
+      this.app.listen(this.port, () => {
+        console.log(`Listening on port: ${this.port}`);
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
