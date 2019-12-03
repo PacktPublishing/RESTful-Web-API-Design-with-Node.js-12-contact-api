@@ -3,7 +3,7 @@ import { MongoClient } from "mongodb";
 export class MongoDao extends MongoClient {
   // shared connection to DB
   static sharedDb;
-  
+
   constructor(url, dbname) {
     super(url || "mongodb://localhost:27017", {
       useNewUrlParser: true,
@@ -18,7 +18,10 @@ export class MongoDao extends MongoClient {
         this.dbConnection = this.db(dbname);
         return this;
       } catch (error) {
-        console.error(error);
+        console.error({
+          message: error.message,
+          stack: error.stack
+        });
       }
     })();
   }
@@ -31,6 +34,10 @@ export class MongoDao extends MongoClient {
     return await this.dbConnection.collection(collectionName).insertOne(doc);
   }
 
+  async insertDocuments(collectionName, docs) {
+    return await this.dbConnection.collection(collectionName).insertMany(docs);
+  }
+
   async updateDocument(collectionName, filter, updateOperation) {
     return await this.dbConnection
       .collection(collectionName)
@@ -39,5 +46,9 @@ export class MongoDao extends MongoClient {
 
   async deleteDocument(collectionName, filter) {
     return await this.dbConnection.collection(collectionName).deleteOne(filter);
+  }
+
+  async deleteAllDocument(collectionName) {
+    return await this.dbConnection.collection(collectionName).deleteMany();
   }
 }

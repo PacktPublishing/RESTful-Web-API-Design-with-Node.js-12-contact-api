@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import basicAuth from "express-basic-auth";
 import { MongoDao } from "./db";
+import { fakeContacts } from "../utils";
+import { ConfigService } from "./config-service";
 
 export class ServerConfig {
   #userAccounts = {
@@ -11,7 +13,7 @@ export class ServerConfig {
 
   constructor({ port, middlewares, routers }) {
     this.app = Express();
-    this.app.set("env", process.env.NODE_ENV);
+    this.app.set("env", ConfigService.NODE_ENV);
     this.app.set("port", port);
     this.registerCORSMiddleware()
       .registerHelmetMiddleware()
@@ -123,21 +125,35 @@ export class ServerConfig {
             });
           }
         )
-      : this.registerMiddleware(({ statusCode, message }, req, res, next) => {
-          res.status(statusCode);
-          res.json({ statusCode, message });
-        });
+      : this.registerMiddleware(
+          ({ statusCode = 500, message }, req, res, next) => {
+            res.status(statusCode);
+            res.json({ statusCode, message });
+          }
+        );
     return this;
   }
 
   async listen() {
-    try {
-      await new MongoDao("", "contactsdb");
-      this.app.listen(this.port, () => {
+    const conn = await new MongoDao(
+      `mongodb+srv://${ConfigService.MONGO_USER}:${ConfigService.MONGO_PASS}@${ConfigService.MONGO_HOST}/test?retryWrites=true&w=majority`,
+      "contactsdb"
+    );
+
+    if (conn) {
+      const collectionName = "contacts";
+
+      // clear contacts collection
+      // conn.deleteAllDocument(collectionName);
+
+      // populate the collection with contacts
+      conn.insertDocuments(collectionName, [...fakeContacts.values()]);
+
+      return this.app.listen(this.port, () => {
         console.log(`Listening on port: ${this.port}`);
       });
-    } catch (error) {
-      console.error(error);
     }
+
+    console.error("DB connection faileed");
   }
 }
