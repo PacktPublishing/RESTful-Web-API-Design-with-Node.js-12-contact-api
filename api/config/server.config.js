@@ -2,9 +2,8 @@ import Express, { Router } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import basicAuth from "express-basic-auth";
-import { MongoDao } from "./db";
-import { fakeContacts } from "../utils";
-import { ConfigService } from "./config-service";
+import { connectDb } from "./db.config";
+import { ConfigService } from "../services";
 
 export class ServerConfig {
   #userAccounts = {
@@ -135,25 +134,14 @@ export class ServerConfig {
   }
 
   async listen() {
-    const conn = await new MongoDao(
-      `mongodb+srv://${ConfigService.MONGO_USER}:${ConfigService.MONGO_PASS}@${ConfigService.MONGO_HOST}/test?retryWrites=true&w=majority`,
-      "contactsdb"
-    );
+    try {
+      await connectDb("contactsdb");
 
-    if (conn) {
-      const collectionName = "contacts";
-
-      // clear contacts collection
-      // conn.deleteAllDocument(collectionName);
-
-      // populate the collection with contacts
-      conn.insertDocuments(collectionName, [...fakeContacts.values()]);
-
-      return this.app.listen(this.port, () => {
+      this.app.listen(this.port, () => {
         console.log(`Listening on port: ${this.port}`);
       });
+    } catch (error) {
+      console.error(`DB error: ${error.message}`);
     }
-
-    console.error("DB connection faileed");
   }
 }

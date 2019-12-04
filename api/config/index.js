@@ -1,3 +1,2 @@
-export { ServerConfig } from "./ServerConfig";
-export { MongoDao } from "./db";
-export { ConfigService } from "./config-service";
+export { ServerConfig } from "./server.config";
+export { connectDb } from "./db.config";

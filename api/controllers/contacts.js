@@ -1,12 +1,9 @@
 import { ObjectID } from "bson";
-import { errorHandler } from "../utils";
-import { MongoDao } from "../config";
+import { errorHandler, fakeContacts } from "../utils";
+import { Contact } from "../models";
 
-const getContacts = async (req, res) => {
-  const contactsCollection = MongoDao.sharedDb.dbConnection.collection(
-    "contacts"
-  );
-  const contacts = await contactsCollection.find({}).toArray();
+export const getContacts = async (req, res) => {
+  const contacts = await Contact.find();
   res.format({
     // using new object method syntax (instead of json: function() {...})
     json() {
@@ -49,40 +46,38 @@ const getContacts = async (req, res) => {
   });
 };
 
-const getContact = async (req, res, next) => {
-  const contactsCollection = MongoDao.sharedDb.dbConnection.collection(
-    "contacts"
-  );
-
+export const getContact = async (req, res, next) => {
   const contactId = req.params.id;
   contactId || next(errorHandler("Please enter a contact ID", 422));
 
-  const contact = await contactsCollection.findOne({
+  const contact = await Contact.findOne({
     _id: new ObjectID(contactId)
   });
   res.json(contact);
 };
 
-const postContact = async (req, res, next) => {
-  const contactsCollection = MongoDao.sharedDb.dbConnection.collection(
-    "contacts"
-  );
-
+export const postContact = async (req, res, next) => {
   const contact = req.body;
   (contact && contact.primaryContactNumber) ||
     next(errorHandler("Please submit valid contact", 422));
 
-  const result = await contactsCollection.insertOne(contact);
-  result.insertedCount === 1
-    ? res.json({ message: "Contact created" })
-    : next(errorHandler("No data inserted"));
+  const newContact = new Contact({ ...contact });
+  await newContact.save();
+
+  // const result = await Contact.insertOne(contact);
+
+  // result.insertedCount === 1
+  //   ? res.json({ message: "Contact created" })
+  //   : next(errorHandler("No data inserted"));
 };
 
-const putContact = async (req, res, next) => {
-  const contactsCollection = MongoDao.sharedDb.dbConnection.collection(
-    "contacts"
-  );
+export const postContactMany = async (req, res, next) => {
+  await Contact.insertMany([...fakeContacts.values()]);
 
+  res.json({ message: "Many contacts generated" });
+};
+
+export const putContact = async (req, res, next) => {
   const contactId = req.params.id;
   const contact = req.body;
 
@@ -90,7 +85,7 @@ const putContact = async (req, res, next) => {
   (contact && contact.primaryContactNumber) ||
     next(errorHandler("Please submit valid contact", 422));
 
-  const result = await contactsCollection.updateOne(
+  const result = await Contact.updateOne(
     { _id: new ObjectID(contactId) },
     { $set: contact }
   );
@@ -99,15 +94,11 @@ const putContact = async (req, res, next) => {
     : next(errorHandler("No data inserted"));
 };
 
-const deleteContact = async (req, res, next) => {
-  const contactsCollection = MongoDao.sharedDb.dbConnection.collection(
-    "contacts"
-  );
-
+export const deleteContact = async (req, res, next) => {
   const contactId = req.params.id;
   contactId || next(errorHandler("Please enter a contact ID", 422));
 
-  const result = await contactsCollection.deleteOne({
+  const result = await Contact.deleteOne({
     _id: new ObjectID(contactId)
   });
 
@@ -116,4 +107,8 @@ const deleteContact = async (req, res, next) => {
     : next(errorHandler("No data deleted"));
 };
 
-export { getContacts, getContact, postContact, putContact, deleteContact };
+export const deleteAllContact = async (req, res, next) => {
+  await Contact.deleteMany({});
+
+  res.json({ message: "All contacts deleted" });
+};

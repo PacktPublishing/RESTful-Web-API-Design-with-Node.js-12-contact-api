@@ -1,28 +1,19 @@
 import { errorHandler } from "../utils";
-import { MongoDao } from "../config";
 import { ObjectID } from "bson";
+import { Contact } from "../models";
 
-MongoDao;
-
-const getGroups = async (req, res) => {
-  const contactsCollection = MongoDao.sharedDb.dbConnection.collection(
-    "contacts"
-  );
-  const contacts = await contactsCollection.find({}).toArray();
+export const getGroups = async (req, res) => {
+  const contacts = await Contact.find();
 
   // use Set data structure to get array of unique values
   res.json([...new Set(contacts.flatMap(conntact => conntact.groups))]);
 };
 
-const getGroupsForContact = async (req, res, next) => {
-  const contactsCollection = MongoDao.sharedDb.dbConnection.collection(
-    "contacts"
-  );
-
+export const getGroupsForContact = async (req, res, next) => {
   const contactId = req.params.contactId;
   contactId || next(errorHandler("Please enter a contact ID", 422));
 
-  const contact = await contactsCollection.findOne({
+  const contact = await Contact.findOne({
     _id: new ObjectID(contactId)
   });
   res.json(contact.groups);
