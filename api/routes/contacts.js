@@ -7,7 +7,7 @@ import {
   putContact,
   deleteContact,
   deleteAllContact,
-  postContactMany
+  postManyContacts
 } from "../controllers";
 import { AsyncWrapper } from "../utils/async-wrapper";
 
@@ -22,8 +22,8 @@ router.get("/:id", AsyncWrapper(getContact));
 // POST /contacts
 router.post("/", AsyncWrapper(postContact));
 
-// POST /contacts/many
-router.post("/many", AsyncWrapper(postContactMany));
+// POST /contacts/many?n=X
+router.post("/many", AsyncWrapper(postManyContacts));
 
 // PUT /contacts/:id
 router.put("/:id", AsyncWrapper(putContact));

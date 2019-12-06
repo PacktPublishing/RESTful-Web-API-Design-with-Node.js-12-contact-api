@@ -2,7 +2,7 @@ export {
   getContacts,
   getContact,
   postContact,
-  postContactMany,
+  postManyContacts,
   putContact,
   deleteContact,
   deleteAllContact

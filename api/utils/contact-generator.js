@@ -1,9 +1,7 @@
-import { company, name, address, phone, internet, random } from "faker";
+import { company, name, address, phone, internet } from "faker";
 
-const fakeContacts = new Map();
-
-new Array(3).fill("toto").forEach(() => {
-  fakeContacts.set(random.uuid(), {
+export const generateFakeContacts = (n = 3) =>
+  new Array(n).fill('toto').map(() => ({
     firstName: name.firstName(),
     lastName: name.lastName(),
     company: company.companyName(),
@@ -15,12 +13,9 @@ new Array(3).fill("toto").forEach(() => {
     otherContactNumbers: [phone.phoneNumber(), phone.phoneNumber()],
     primaryEmailAddress: internet.email(),
     otherEmailAddresses: [internet.email(), internet.email()],
-    groups: ["Dev", "Node.js"],
+    groups: ["Dev", "Node.js", "REST"],
     socialMedia: [
       { name: "Linkedin", link: internet.url() },
       { name: "Twitter", link: internet.url() }
     ]
-  });
-});
-
-export { fakeContacts };
+  }));
