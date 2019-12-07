@@ -86,10 +86,12 @@ export const postContact = async (req, res, next) => {
   const newContact = new Contact({ ...contact });
   const { _id, _doc } = await newContact.save();
 
-  res
-    .status(201)
-    .set("location", `/contacts/${_id}`)
-    .json({ message: "Contact created", data: _doc });
+  _doc && _doc.primaryContactNumber
+    ? res
+        .status(201)
+        .set("location", `/contacts/${_id}`)
+        .json({ message: "Contact created", data: _doc })
+    : next(errorHandler("No contact created"));
 };
 
 export const postManyContacts = async (req, res, next) => {
@@ -98,11 +100,9 @@ export const postManyContacts = async (req, res, next) => {
 
   const generatedContacts = await Contact.insertMany(generateFakeContacts(n));
 
-  console.log(generatedContacts.length);
-
   res.status(201).json({
     message: `${n} contacts generated`,
-    locations: generatedContacts.map(({ _id }) => `/contacts/${_id}`)
+    locations: generatedContacts.map(({ _id }) => `/api/v1/contacts/${_id}`)
   });
 };
 
