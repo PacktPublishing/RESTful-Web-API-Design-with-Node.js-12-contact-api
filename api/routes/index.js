@@ -1,4 +1,3 @@
-export { contactsV1 } from "./contactsV1";
-export { contactsV2 } from "./contactsV2";
-export { groupsV1 } from "./groupsV1";
+export { routerV1 } from "./v1";
+export { routerV2 } from "./v2";
 export { redirectRouter } from "./redirect.routes";
