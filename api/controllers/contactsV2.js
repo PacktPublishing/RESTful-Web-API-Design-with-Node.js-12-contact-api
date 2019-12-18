@@ -2,7 +2,6 @@ import { contactsV1 } from ".";
 import { contactService } from "../services";
 
 import DbConfig from "../config/db.config";
-import { AsyncWrapper } from "../utils";
 
 export const getBasicContacts = async (req, res) => {
   contactService.findContacts({
