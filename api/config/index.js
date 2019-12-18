@@ -1,2 +1,4 @@
-export { ServerConfig } from "./server.config";
-export { connectDb } from "./db.config";
+import ServerConfig from "./server.config";
+import DbConfig from "./db.config";
+
+export { ServerConfig, DbConfig };

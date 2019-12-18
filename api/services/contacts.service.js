@@ -1,5 +1,8 @@
+import mongoose from "mongoose";
+
 import { Contact } from "../models";
-import { fmtUtils, generateSelf } from "../utils";
+import { fmtUtils, generateSelf, errorHandler } from "../utils";
+import DbConfig from "../config/db.config";
 
 /**
  *
@@ -79,4 +82,35 @@ export const findContacts = async args => {
       }
     }
   });
+};
+
+export const deleteContactImage = async (req, res, next) => {
+  if (!DbConfig.gfsBucket) return next(errorHandler("No gridfs bucket"));
+  try {
+    await DbConfig.gfsBucket.delete(
+      new mongoose.Types.ObjectId(req.params.fileId)
+    );
+
+    res.json({ message: "Image removed" });
+  } catch (error) {
+    next(errorHandler(error.message));
+  }
+};
+
+export const getContactImage = async (req, res, next) => {
+  if (!DbConfig.gfsBucket) return next(errorHandler("No gridfs bucket"));
+
+  try {
+    const files = await DbConfig.gfsBucket
+      .find({ filename: req.params.filename })
+      .toArray();
+
+    if (!files || files.length === 0) {
+      return next(errorHandler("no files exist", 404));
+    }
+
+    DbConfig.gfsBucket.openDownloadStreamByName(req.params.filename).pipe(res);
+  } catch (error) {
+    next(errorHandler(error.message));
+  }
 };

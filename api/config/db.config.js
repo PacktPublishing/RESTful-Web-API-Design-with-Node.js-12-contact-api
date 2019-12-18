@@ -2,13 +2,15 @@
 
 import multer from "multer";
 import mongoose from "mongoose";
+import crypto from "crypto";
+import path from "path";
 import GridFsStorage from "multer-gridfs-storage";
 
 import { ConfigService } from "../services/config.service";
 // eslint-disable-next-line no-unused-vars
 import { GridFSBucket } from "mongodb";
 
-export default class DbCobfig {
+export default class DbConfig {
   /** @type {mongoose.Connection} */
   static conn;
   /** @type {string} */
@@ -16,7 +18,7 @@ export default class DbCobfig {
   /** @type {multer.Instance} */
   static upload;
   /** @type {GridFSBucket} */
-  gfsBucket;
+  static gfsBucket;
 
   constructor(dbName) {
     this.dbName = dbName;
@@ -24,35 +26,57 @@ export default class DbCobfig {
   }
 
   async connectDb() {
-    DbCobfig.conn = mongoose.createConnection(this.mongoURI, {
+    mongoose.connect(this.mongoURI, {
       useUnifiedTopology: true,
       useCreateIndex: true
     });
 
-    DbCobfig.conn.once("open", () => {
+    // retrieve mongoose default connectionj
+    DbConfig.conn = mongoose.connection;
+
+    DbConfig.conn.once("open", () => {
       console.log(`Connected to ${this.dbName} database`);
 
-      this.gfsBucket = this.createGridFsBucket("uploads");
+      DbConfig.gfsBucket = new mongoose.mongo.GridFSBucket(DbConfig.conn.db, {
+        bucketName: "images"
+      });
     });
-    DbCobfig.conn.on("error", err => console.error(err.message));
-    try {
-      return await DbCobfig.conn;
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
-  createGridFsBucket(bucketName) {
-    return new mongoose.mongo.GridFSBucket(DbCobfig.conn.db, {
-      bucketName
+    DbConfig.conn.on("error", err => console.error(err.message));
+
+    const storage = new GridFsStorage({
+      // url: this.mongoURI,
+      db: DbConfig.conn,
+      file: (req, file) => {
+        return new Promise((resolve, reject) => {
+          crypto.randomBytes(16, (err, buf) => {
+            if (err) {
+              return reject(err);
+            }
+            const filename =
+              buf.toString("hex") + path.extname(file.originalname);
+            const fileInfo = {
+              filename: filename,
+              bucketName: "images"
+            };
+            resolve(fileInfo);
+          });
+        });
+      }
     });
-  }
 
-  createMulterInstanceConnectedToGridfs() {
-    const storage = new GridFsStorage({ db: this.conn.db });
-
-    DbCobfig.upload = multer({
+    DbConfig.upload = multer({
       storage
     });
+
+    return DbConfig.conn;
+  }
+
+  static getMulterUploadMiddleware() {
+    return async (...args) => DbConfig.upload.single("file")(...args);
+  }
+
+  static get gfsBucket() {
+    return this.gfsBucket;
   }
 }
