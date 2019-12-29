@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import basicAuth from "express-basic-auth";
 import morgan from "morgan";
+import paginate from "express-paginate";
+
 import DbConfig from "./db.config";
 import { ConfigService } from "../services";
 
@@ -19,7 +21,8 @@ export default class ServerConfig {
       .registerHelmetMiddleware()
       .registerMorganMiddleware()
       .registerBasicAuthMiddleware()
-      .registerJSONMiddleware();
+      .registerJSONMiddleware()
+      .registerExpressPaginateMiddleware();
 
     middlewares &&
       middlewares.forEach(mdlw => {
@@ -116,6 +119,14 @@ export default class ServerConfig {
    */
   registerMorganMiddleware() {
     this.registerMiddleware(morgan("combined"));
+    return this;
+  }
+
+  /**
+   * register Express Paginate middleware for pagianted data response
+   */
+  registerExpressPaginateMiddleware() {
+    this.registerMiddleware(paginate.middleware(2, 100));
     return this;
   }
 

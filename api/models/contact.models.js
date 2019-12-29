@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 //define Model for metadata collection.
 const GFS = mongoose.model(
@@ -35,5 +36,7 @@ const contactSchema = new mongoose.Schema(
   },
   { versionKey: false }
 );
+
+contactSchema.plugin(mongoosePaginate);
 
 export const Contact = mongoose.model("Contact", contactSchema);

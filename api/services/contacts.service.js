@@ -81,14 +81,47 @@ export default class ContactsService {
 
   /**
    *
+   * @param {*} filter
    * @param {*} fields
+   * @param {number} offset
+   * @param {number} limit
+   * @param {string} url
+   * @param {*} next
    */
-  async findContacts(fields) {
-    return fields
-      ? await Contact.find()
-          .select(fields)
-          .populate("image")
-      : await Contact.find().populate("image");
+  async findContacts(filter = {}, fields, offset, limit, next) {
+    const options = {
+      limit,
+      page: offset,
+      populate: "image",
+      select: fields
+    };
+
+    const {
+      docs,
+      totalDocs,
+      page,
+      totalPages,
+      hasNextPage,
+      nextPage,
+      hasPrevPage,
+      prevPage,
+      pagingCounter
+    } = await Contact.paginate(filter, options);
+
+    if (offset > totalPages)
+      return next(errorHandler("Page number does not exist", 422));
+
+    return {
+      docs,
+      totalDocs,
+      page,
+      totalPages,
+      hasNextPage,
+      nextPage,
+      hasPrevPage,
+      prevPage,
+      pagingCounter
+    };
   }
 
   /**
@@ -135,14 +168,11 @@ export default class ContactsService {
         next
       );
 
-      console.log(
-        `\n MESSAGELinking uploaded image to contact ${contactUpdateResponse.message} \n`
-      );
-
-      if (contactUpdateResponse.message !== "Contact updated")
-        errorHandler(
-          `Error Linking image to contact: ${contactUpdateResponse.data}`
-        );
+      return contactUpdateResponse.message === "Contact updated"
+        ? true
+        : errorHandler(
+            `Error Linking image to contact: ${contactUpdateResponse.data}`
+          );
     } catch (error) {
       errorHandler(error.message);
     }
