@@ -6,14 +6,14 @@
 export const generateSelf = ({ url, entity }) => {
   const self = [
     {
-      href: `${url}/contacts${entity ? `/${entity._id}` : "{?offset,limit}"}`,
+      href: `${url}/api/v2/contacts${entity ? `/${entity._id}` : "{?offset,limit}"}`,
       method: "GET",
       rel: "self"
     }
   ];
 
   if (entity) {
-    return [
+    const selfRef = [
       ...self,
       {
         href: `${url}/contacts/${entity._id}`,
@@ -27,10 +27,25 @@ export const generateSelf = ({ url, entity }) => {
       },
       {
         href: `${url}/api/v2/contacts/${entity._id}/image`,
-        method: "GET",
+        method: "POST",
         rel: "image"
       }
     ];
+
+    const imageRef = [
+      {
+        href: `${url}/api/v2/contacts/${entity._id}/image`,
+        method: "GET",
+        rel: "image"
+      },
+
+      {
+        href: `${url}/api/v2/contacts/${entity._id}/image`,
+        method: "DELETE",
+        rel: "image"
+      }
+    ];
+    return entity.image ? [...selfRef, ...imageRef] : selfRef;
   }
   return self;
 };
