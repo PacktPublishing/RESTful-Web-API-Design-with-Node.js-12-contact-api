@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+//define Model for metadata collection.
+const GFS = mongoose.model(
+  "GFS",
+  new mongoose.Schema({}, { strict: false }),
+  "images.files"
+);
+
 const contactSchema = new mongoose.Schema(
   {
     firstName: String,
@@ -20,7 +27,11 @@ const contactSchema = new mongoose.Schema(
         name: String,
         link: String
       }
-    ]
+    ],
+    image: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "GFS"
+    }
   },
   { versionKey: false }
 );

@@ -9,12 +9,12 @@ export default async router => {
   // GET /api/v2/contacts/full
   router.get("/contacts/full", AsyncWrapper(v2.getContacts));
 
-  // POST /api/v2/contacts/image
-  router.post("/contacts/image", v2.postContactImage.map(AsyncWrapper));
+  // POST /api/v2/contacts/:id/image
+  router.post("/contacts/:id/image", v2.postContactImage.map(AsyncWrapper));
 
-  // GET /api/v2/contacts/:filename/images
-  router.get("/contacts/:filename/image", AsyncWrapper(v2.getContactImage));
+  // GET /api/v2/contacts/:id/image
+  router.get("/contacts/:id/image", AsyncWrapper(v2.getContactImage));
 
-  // DELETE /api/v2/contacts/:id/images
-  router.delete("/contacts/:fileId/image", AsyncWrapper(v2.deleteContactImage));
+  // DELETE /api/v2/contacts/:id/image
+  router.delete("/contacts/:id/image", AsyncWrapper(v2.deleteContactImage));
 };

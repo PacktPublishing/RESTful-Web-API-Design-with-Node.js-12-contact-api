@@ -1,14 +1,12 @@
 /**
  * Generate links related to entity
  * @param {*} entity
- * @param {Express.Request} req
+ * @param {string} url
  */
-export const generateSelf = ({ req, entity }) => {
+export const generateSelf = ({ url, entity }) => {
   const self = [
     {
-      href: `${req.protocol}://${req.hostname}:${req.app.get("port")}${
-        req.path
-      }${entity ? `/${entity._id}` : "{?offset,limit}"}`,
+      href: `${url}/contacts${entity ? `/${entity._id}` : "{?offset,limit}"}`,
       method: "GET",
       rel: "self"
     }
@@ -18,23 +16,17 @@ export const generateSelf = ({ req, entity }) => {
     return [
       ...self,
       {
-        href: `${req.protocol}://${req.hostname}:${req.app.get("port")}${
-          req.path
-        }/${entity._id}`,
+        href: `${url}/contacts/${entity._id}`,
         method: "PUT",
         rel: "update"
       },
       {
-        href: `${req.protocol}://${req.hostname}:${req.app.get("port")}${
-          req.path
-        }/${entity._id}`,
+        href: `${url}/contacts/${entity._id}`,
         method: "DELETE",
         rel: "delete"
       },
       {
-        href: `${req.protocol}://${req.hostname}:${req.app.get("port")}${
-          req.path
-        }/${entity._id}/image`,
+        href: `${url}/api/v2/contacts/${entity._id}/image`,
         method: "GET",
         rel: "image"
       }

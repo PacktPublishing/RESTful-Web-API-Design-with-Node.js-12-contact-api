@@ -1,4 +1,4 @@
-export { ConfigService } from "./config.service";
-import * as contactService from "./contacts.service";
+import ConfigService from "./config.service";
+import ContactService from "./contacts.service";
 
-export { contactService };
+export { ContactService, ConfigService };

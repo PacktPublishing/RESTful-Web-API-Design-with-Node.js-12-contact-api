@@ -1,12 +1,10 @@
-// @ts-checkh
-
 import multer from "multer";
 import mongoose from "mongoose";
 import crypto from "crypto";
 import path from "path";
 import GridFsStorage from "multer-gridfs-storage";
 
-import { ConfigService } from "../services/config.service";
+import { ConfigService } from "../services";
 // eslint-disable-next-line no-unused-vars
 import { GridFSBucket } from "mongodb";
 
@@ -20,8 +18,9 @@ export default class DbConfig {
   /** @type {GridFSBucket} */
   static gfsBucket;
 
-  constructor(dbName) {
+  constructor(dbName, bucketName) {
     this.dbName = dbName;
+    this.bucketName = bucketName;
     this.mongoURI = `mongodb+srv://${ConfigService.MONGO_USER}:${ConfigService.MONGO_PASS}@${ConfigService.MONGO_HOST}/${dbName}?retryWrites=true&w=majority`;
   }
 
@@ -31,21 +30,20 @@ export default class DbConfig {
       useCreateIndex: true
     });
 
-    // retrieve mongoose default connectionj
+    // retrieve mongoose default connection
     DbConfig.conn = mongoose.connection;
 
     DbConfig.conn.once("open", () => {
       console.log(`Connected to ${this.dbName} database`);
 
       DbConfig.gfsBucket = new mongoose.mongo.GridFSBucket(DbConfig.conn.db, {
-        bucketName: "images"
+        bucketName: this.bucketName
       });
     });
 
     DbConfig.conn.on("error", err => console.error(err.message));
 
     const storage = new GridFsStorage({
-      // url: this.mongoURI,
       db: DbConfig.conn,
       file: (req, file) => {
         return new Promise((resolve, reject) => {
@@ -56,8 +54,11 @@ export default class DbConfig {
             const filename =
               buf.toString("hex") + path.extname(file.originalname);
             const fileInfo = {
+              metadata: {
+                originalName: file.originalname
+              },
               filename: filename,
-              bucketName: "images"
+              bucketName: this.bucketName
             };
             resolve(fileInfo);
           });
@@ -66,7 +67,12 @@ export default class DbConfig {
     });
 
     DbConfig.upload = multer({
-      storage
+      storage,
+      fileFilter: (req, file, cb) => {
+        file.mimetype.includes("image")
+          ? cb(null, true)
+          : cb(new Error("Wrong file type - only accepts images"));
+      }
     });
 
     return DbConfig.conn;
@@ -74,9 +80,5 @@ export default class DbConfig {
 
   static getMulterUploadMiddleware() {
     return async (...args) => DbConfig.upload.single("file")(...args);
-  }
-
-  static get gfsBucket() {
-    return this.gfsBucket;
   }
 }

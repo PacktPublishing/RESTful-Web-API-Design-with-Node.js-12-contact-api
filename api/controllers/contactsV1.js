@@ -4,7 +4,9 @@ import { Contact } from "../models";
 import { generateFakeContacts } from "../utils";
 
 export const getContacts = async (req, res) => {
-  const contacts = await Contact.find();
+  const contacts = await Contact.find()
+    .populate("image")
+    .exec();
   res.format({
     // using new object method syntax (instead of json: function() {...})
     json() {
@@ -73,7 +75,9 @@ export const getContact = async (req, res, next) => {
 
   const contact = await Contact.findOne({
     _id: new ObjectID(contactId)
-  });
+  })
+    .populate("image")
+    .exec();
   res.json(contact);
 };
 
