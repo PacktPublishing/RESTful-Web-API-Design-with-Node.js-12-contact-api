@@ -4,7 +4,7 @@ import crypto from "crypto";
 import path from "path";
 import GridFsStorage from "multer-gridfs-storage";
 
-import { ConfigService } from "../services";
+import { ConfigService, CacheService } from "../services";
 // eslint-disable-next-line no-unused-vars
 import { GridFSBucket } from "mongodb";
 
@@ -38,6 +38,13 @@ export default class DbConfig {
 
       DbConfig.gfsBucket = new mongoose.mongo.GridFSBucket(DbConfig.conn.db, {
         bucketName: this.bucketName
+      });
+
+      // connect to cache server
+      global.redisCacheService = new CacheService({
+        host: ConfigService.get("REDIS_HOST"),
+        port: ConfigService.get("REDIS_PORT"),
+        password: ConfigService.get("REDIS_PASSWORD")
       });
     });
 

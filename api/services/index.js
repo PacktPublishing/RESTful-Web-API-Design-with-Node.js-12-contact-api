@@ -1,4 +1,5 @@
 import ConfigService from "./config.service";
 import ContactService from "./contacts.service";
+import CacheService from "./cache.service";
 
-export { ContactService, ConfigService };
+export { CacheService, ContactService, ConfigService };
