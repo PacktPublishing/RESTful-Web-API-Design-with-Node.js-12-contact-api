@@ -18,7 +18,9 @@
         "REDIS_PASSWORD": "cmVkaXNwYXNzMQo=",
         "REDIS_HOST": "localhost",
         "REDIS_PORT": 6379,
-        "CORS_WHITELIST": ""
+        "CORS_WHITELIST": "",
+        "RATE_LIMIT_MAX_REQUESTS": 100,
+        "RATE_LIMIT_WINDOW_MS": 0
       },
       "env_production": {
         "NODE_ENV": "production"

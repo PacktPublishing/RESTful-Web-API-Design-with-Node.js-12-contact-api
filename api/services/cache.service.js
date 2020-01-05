@@ -103,8 +103,17 @@ export default class CacheService {
     return await this.#asyncExpire(usId, 0);
   }
 
+  /**
+   *
+   * @param {import("mongoose").Schema.Types.ObjectId} userId
+   * @param {number} seconds
+   */
   async purgeCache(userId, seconds) {
     const usId = this.#getUserKey(userId);
     return await this.#asyncExpire(usId, seconds);
+  }
+
+  get redisRateLimitClient() {
+    return this.#client;
   }
 }
