@@ -1,10 +1,18 @@
 // use aliases to avoid name conflicts
 import { contactsV2 as v2 } from "../../controllers";
 import { AsyncWrapper } from "../../utils/async-wrapper";
+import { CorsConfig } from "../../config";
+import { ConfigService } from "../../services";
 
 export default async router => {
+  const corsConf = new CorsConfig(ConfigService.get("CORS_WHITELIST"));
+
   // GET /api/v2/contacts
-  router.get("/contacts", AsyncWrapper(v2.getBasicContacts));
+  router.get(
+    "/contacts",
+    (res, req, next) => corsConf.setAsyncConfig()(res, req, next),
+    AsyncWrapper(v2.getBasicContacts)
+  );
 
   // GET /api/v2/contacts/full
   router.get("/contacts/full", AsyncWrapper(v2.getContacts));
