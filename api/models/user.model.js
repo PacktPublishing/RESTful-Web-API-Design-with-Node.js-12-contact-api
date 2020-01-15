@@ -1,14 +1,8 @@
 import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
+import { GFS } from "./contact.models";
 
-//define Model for metadata collection.
-export const GFS = mongoose.model(
-  "GFS",
-  new mongoose.Schema({}, { strict: false }),
-  "images.files"
-);
-
-const contactSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     firstName: String,
     lastName: String,
@@ -20,7 +14,10 @@ const contactSchema = new mongoose.Schema(
     country: String,
     primaryContactNumber: String,
     otherContactNumbers: [String],
-    primaryEmailAddress: String,
+    primaryEmailAddress: {
+      type: String,
+      unique: true
+    },
     otherEmailAddresses: [String],
     groups: [String],
     socialMedia: [
@@ -32,11 +29,20 @@ const contactSchema = new mongoose.Schema(
     image: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "GFS"
-    }
+    },
+    credential: {
+      password: String
+    },
+    contacts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Contact"
+      }
+    ]
   },
   { versionKey: false }
 );
 
-contactSchema.plugin(mongoosePaginate);
+userSchema.plugin(mongoosePaginate);
 
-export const Contact = mongoose.model("Contact", contactSchema);
+export const User = mongoose.model("User", userSchema);
