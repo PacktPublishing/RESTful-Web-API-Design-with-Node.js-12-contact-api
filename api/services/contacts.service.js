@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { Contact } from "../models";
+import { Contact, User } from "../models";
 import { fmtUtils, generateSelf, errorHandler } from "../utils";
 import DbConfig from "../config/db.config";
 
@@ -293,5 +293,91 @@ export default class ContactsService {
     } catch (error) {
       next(errorHandler(error.message));
     }
+  }
+
+  /**
+   * Create new contact and associate it to logged uqer
+   * @param {*} userId
+   * @param {*} contactData
+   * @param {*} next
+   */
+  async postUserContact(userId, contactData, next) {
+    const newContact = new Contact(contactData);
+    const insertedContact = await newContact.save();
+
+    const result = await User.updateOne(
+      { _id: userId },
+      {
+        // $addToSet : operator to avoid duplicate values in array
+        // can also use mongoose plugin https://www.npmjs.com/package/mongoose-unique-array
+        $addToSet: { contacts: insertedContact._id }
+      }
+    ).select({
+      firstName: 1,
+      lastName: 1,
+      primaryEmailAddress: 1,
+      contacts: 1
+    });
+
+    return result.ok === 1 && result.nModified > 0;
+  }
+
+  /**
+   *
+   * @param {*} user
+   * @param {*} contactId
+   * @param {*} updateContactData
+   * @param {*} next
+   */
+  async putUserContact(user, contactId, updateContactData, next) {
+    // check contact id in logged user contacts
+    const found = user.contacts.find(
+      contact => contact.toString() === contactId
+    );
+
+    if (found) {
+      const result = await Contact.updateOne(
+        {
+          _id: contactId
+        },
+        updateContactData
+      );
+
+      return result.ok === 1 && result.nModified > 0;
+    }
+
+    return false;
+  }
+
+  /**
+   *
+   * @param {*} user
+   * @param {*} contactId
+   * @param {*} next
+   */
+  async deleteUserContact(user, contactId, next) {
+    // check contact id in logged user contacts
+    const found = user.contacts.find(
+      contact => contact.toString() === contactId
+    );
+
+    if (found) {
+      const result = await Contact.deleteOne({
+        _id: contactId
+      });
+
+      if (result.ok === 1 && result.deletedCount > 0) {
+        // remove contact from user contacts
+        user.contacts = user.contacts.filter(
+          contact => contact.toString() !== contactId
+        );
+
+        const updated = await user.save();
+
+        return Boolean(updated);
+      }
+    }
+
+    return false;
   }
 }

@@ -25,4 +25,13 @@ export default async router => {
 
   // DELETE /api/v2/contacts/:id/image
   router.delete("/contacts/:id/image", AsyncWrapper(v2.deleteContactImage));
+
+  // POST /api/v2/contacts
+  router.post("/contacts", AsyncWrapper(v2.postUserContact));
+
+  // PUT /api/v2/contacts/:id
+  router.put("/contacts/:id", AsyncWrapper(v2.putUserContact));
+
+  // DELETE /api/v2/contacts/:id
+  router.delete("/contacts/:id", AsyncWrapper(v2.deleteUserContact));
 };
