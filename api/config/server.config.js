@@ -1,19 +1,15 @@
-import Express, { Router } from "express";
+import Express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import basicAuth from "express-basic-auth";
 import morgan from "morgan";
 import paginate from "express-paginate";
 
 import DbConfig from "./db.config";
 import { ConfigService, CacheService } from "../services";
 import { RateLimiterConfig } from ".";
+import { AuthMiddleware } from "../middlewares";
 
 export default class ServerConfig {
-  #userAccounts = {
-    admin: "supersecret2"
-  };
-
   constructor({ port, middlewares, routers }) {
     this.app = Express();
     this.app.set("env", ConfigService.NODE_ENV);
@@ -22,7 +18,7 @@ export default class ServerConfig {
       .registerHelmetMiddleware()
       .registerRateLimiter()
       .registerMorganMiddleware()
-      .registerBasicAuthMiddleware()
+      .registerJwtPassportMiddleware()
       .registerJSONMiddleware()
       .registerExpressPaginateMiddleware();
 
@@ -104,19 +100,6 @@ export default class ServerConfig {
   }
 
   /**
-   * register Helmet middleware for Security HTTP headers
-   */
-  registerBasicAuthMiddleware() {
-    this.registerMiddleware(
-      basicAuth({
-        users: this.#userAccounts,
-        challenge: true
-      })
-    );
-    return this;
-  }
-
-  /**
    * register Morgan middleware for request logging
    */
   registerMorganMiddleware() {
@@ -176,6 +159,16 @@ export default class ServerConfig {
             res.json({ statusCode, message });
           }
         );
+    return this;
+  }
+
+  /**
+   * register jwt Passport authentication middleware
+   */
+  registerJwtPassportMiddleware() {
+    const authMdlw = new AuthMiddleware();
+    const passportJwtMiddleware = authMdlw.registerJwtStrategy();
+    this.registerMiddleware(passportJwtMiddleware);
     return this;
   }
 
