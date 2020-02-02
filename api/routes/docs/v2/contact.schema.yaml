@@ -1,0 +1,64 @@
+components:
+  schemas:
+    Contact:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - primaryContactNumber
+        - primaryEmailAddress
+      properties:
+        firstName:
+          type: string
+          description: the contact's firstname
+          example: Brof
+        lastName:
+          type: string
+          description: the contact's lastName
+          example: Plack
+        title:
+          type: string
+          description: the contact's title
+          example: First class admiral
+        company:
+          type: string
+          description: the contact's company
+          example: Bone brigade
+        jobTitle:
+          type: string
+          description: the contact's job title
+          example: owner
+        address:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        primaryContactNumber:
+          type: string
+        otherContactNumbers:
+          type: array
+          items:
+            type: string
+        primaryEmailAddress:
+          type: string
+        otherEmailAddresses:
+          type: array
+          items:
+            type: string
+        groups:
+          type: array
+          items:
+            type: string
+        socialMedia:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              link:
+                type: string
+        image:
+          type: string
+          description: reference to contact's image file

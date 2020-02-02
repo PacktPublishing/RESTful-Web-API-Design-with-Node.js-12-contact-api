@@ -1,0 +1,125 @@
+tags:
+  name: Contacts
+  description: Contact management
+path:
+  /contacts:
+    get:
+      summary: retrieve logged user contacts (paginated)
+      tags: [Contacts]
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            description: The number of pages to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            description: The numbers of items to return per page
+      responses:
+        "200":
+          description: a page of contacts
+          content:
+            application/json:
+              schema:
+                # $ref:'#/components/schemas/Contact'
+                type: object
+                properties:
+                  docs:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            data:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                firstName:
+                                  type: string
+                                lastName:
+                                  type: string
+                                primaryContactNumber:
+                                  type: string
+                                primaryEmailAddress:
+                                  type: string
+                                image:
+                                  type: string
+                            links:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  href:
+                                    type: string
+                                  method:
+                                    type: string
+                                  rel:
+                                    type: string
+                  totalDocs:
+                    type: integer
+                  page": 1,
+                  totalPages:
+                    type: integer
+                  hasNextPage:
+                    type: boolean
+                  nextPage:
+                    type: integer
+                  hasPrevPage:
+                    type: boolean
+                  prevPage:
+                    type: integer
+                  pagingCounter:
+                    type: integer
+        "400":
+          description: Bad request. User ID must be an integer and larger than 0.
+        "401":
+          description: Authorization information is missing or invalid.
+        "404":
+          description: A user with the specified ID was not found.
+        "5XX":
+          description: Unexpected error.
+    post:
+      summary: create contacts for logged user
+      tags: [Contacts]
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: contact to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                primaryContactNumber:
+                  type: string
+                primaryEmailAddress:
+                  type: string
+      responses:
+        "200":
+          description: server feedback
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: boolean
