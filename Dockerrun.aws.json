@@ -1,0 +1,84 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "api",
+      "image": "fgoto/contacts-api",
+      "hostname": "api",
+      "essential": true,
+      "memory": 128,
+      "links": ["redis"],
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        },
+        {
+          "name": "REDIS_HOST",
+          "value": "redis"
+        },
+        {
+          "name": "REDIS_PORT",
+          "value": "6379"
+        },
+        {
+          "name": "REDIS_PASSWORD",
+          "value": "cmVkaXNwYXNzMQo="
+        },
+        {
+          "name": "MONGO_USER",
+          "value": "admin"
+        },
+        {
+          "name": "MONGO_PASS",
+          "value": "87654321Mongodb"
+        },
+        {
+          "name": "MONGO_HOST",
+          "value": "cluster0-y8588.mongodb.net"
+        },
+        {
+          "name": "RATE_LIMIT_MAX_REQUESTS",
+          "value": 100
+        },
+        {
+          "name": "RATE_LIMIT_WINDOW_MS",
+          "value": 900000
+        },
+        {
+          "name": "JWT_TOKEN_SECRET",
+          "value": "smcP0mbNPwAIpwpMxajKNtf8EGd1P7I/5ULokS94nv9uUPBkKkNcVoGB1WaFNstd qxPfBQnr9chrR+ObeCWgj+yIjEJ8gQdnQS7I3U7yiOsO4sjKkvXL/J1X4p8TWwg6 GQfJQscXIE30W3T7CoubwqtEGBVWvmY5+IOkRpcYQ6SzcG16JIsmEjDFA01gWAV1 UFZhrGBE1Dm3vFMJeJRz1Nz3ce3NitpMdH0avaldyGL+ndupcp4j3YVLpeyhZkkd EkDJOarOWGdlBDN0Auuom9u2d64MPvdx12uuhJVpkGtXkKhHC1MZcKOCIxwZb66g mGWh3N0nR1RJ8pHJP88nu91+icaZ43K0aj8NXBzRolejsfD24/bxuBrtWselazRI dMnn2KSlu3yfNi4q3jZ6WNKbAAJrxF6cu3YPOvBkSDnGuBsL+S37c0E2KC5EDIzX 76wcpdw58SHyCDXQptKXejhq9NuAhJNkAmdFiz/pPB/QJwDCBIT+pjLwLomPsKM0 wMDMMDb86kXhaisjn7xgC0hqd32MrP0SwuLG2IcqggHl+m7xBs3+OwbWnmGE2EFH 6xNO+YY/T6m8R+1Dx9s03EpZOIMU+rkIFWgOupZL3M9RwRDTSKIJqo6VOvQgpjjb JnPzWYxKgtD9CIttRnodBLBOiK5ERLOhEvpZYDzMJK783np+4a9nE0LkvRcNcZNH 1rv6EJZvpQxhpEm4I+HJ5p9hy7YkmBpaZ4GKtZojicMwtL2vRuFdH+WYgGYdPVxD r3PKQRk+ktPblnJFE3OQxMfBpgF44Qn4p65D68gzclcfuNaRTb8GmCIBaRj1N/wd e5FbJJVcoEstwOyALWug7ZMjo8/S3hF9fkXAqp53P2nLL0PsQ9pLptC7fLhQ83TR aPvEaZ8pbpStzLOSVMwXQMkZwK4/2QysV26NWAO5nU+KJifFH9gDGPKTzk7i462P pnWQCuuV+UGLv610woRdXpJm7A7lnl/8M+3nC4Uj28QpFnKiTxM3G9NILkmhMzai PobhcTCqvna+qgvcTuWkQSHnQteKWca8n713Q06UuKD4iWqO18OH/OuTsB7++AG2 zM3jzK0ZmT5gcglRD5dD/Daz3wPuo/7foK9fBDsFZ9Uqq4yw9bKcRmBe3hPAiwRe ZJtldTa3y/4okfdJvHbD+tcPoImElLd46EgPV3w8i6aiDp3cxjr3k76nBjPC+hso P9WEIeIQhsI5n6G49EKLEZV5X5dyO4Fp8vHwON5GufMzGWFzxUkPSj53FpL4SdNc gypan9EiVoeJ+BkObTXwJNrgcMDmcvU+v5nYiusXAU3odv2HbPvewmFEpCcTfqHp a6EjdIMuN4YTD7UsAXNbXXHp7AumwLJVEBINT2kC0r0hGQGmcuL3bj66voFk+JHX UcLgD7PWhBGvVRhwbZpXgQ9/KXcft+PySicZfw0hwr0SR5/Zgy6jI0Z8lL8vXl5z psBdefl9fTQafqD8PXHhN4GTx0TF7emC9rzwuGF1t6Z3KZOSVpkPArK3+hPSmJAt /fQYIdcPVpKQU2GJcSO8aVeRz4uRisLV5aqU+7XegR6ASXcn2pE7lV9A96wg3JMm K5mYfT3gAejnH+7BeRY7OoaZ/o7xF9xcStZ90feJYlqRFnkOJyIO+6wyrLHPhMru k2X4uhzSB2zByN8q6UI176W+YbgNt4nlPU8AoYgE2ElOo+B6GcPyE4l8vnAem9I4 SyC4AIhqpkzyhUs4b3XngfBF6+Mgk23wJjrahSQ2dxPvpARw+KIhxEywema8qeB+ lLVHe/qW9JYjJ4jUkjoEHk47zai7Mo8BctWtZ4h+MQuRKKYVz/9bWq0p0oPXQQ/i 702qw+frFNE="
+        },
+        {
+          "name": "JWT_TOKEN_ISSUER",
+          "value": "contactsdb.com"
+        }
+      ],
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 3000
+        }
+      ]
+    },
+    {
+      "name": "redis",
+      "image": "redis",
+      "hostname": "redis",
+      "essential": true,
+      "memory": 128,
+      "environment": [
+        {
+          "name": "REDIS_PASSWORD",
+          "value": "cmVkaXNwYXNzMQo="
+        }
+      ],
+      "portMappings": [
+        {
+          "hostPort": 6379,
+          "containerPort": 6379
+        }
+      ]
+    }
+  ]
+}
