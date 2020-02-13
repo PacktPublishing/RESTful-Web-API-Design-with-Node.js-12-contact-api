@@ -35,6 +35,12 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use((err, req, res, next) => {
+  res
+    .status(err.status || 500)
+    .render("index", { error: true, auth: false, errorMessage: err.message });
+});
+
 app.listen(PORT, () => {
   console.log(`Client server listening on port ${PORT}`);
 });

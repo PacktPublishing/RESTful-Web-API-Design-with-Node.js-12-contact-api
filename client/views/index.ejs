@@ -15,6 +15,10 @@
     <script defer src="main.js"></script>
   </head>
   <body style="text-align: center; margin: auto;">
-    <h1>WORKING !!</h1>
+    <br />
+    <br />
+    <% if(error) {%> 
+      <%- include('error', { errorMessage: errorMessage }); %>
+    <% } %>
   </body>
 </html>
