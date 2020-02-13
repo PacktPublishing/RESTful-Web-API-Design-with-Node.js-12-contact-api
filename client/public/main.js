@@ -1,0 +1,3 @@
+/**
+ * BROWSER-SIDE JAVASCRIPT
+ */

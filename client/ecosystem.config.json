@@ -1,0 +1,15 @@
+{
+    "apps": [
+      {
+        "name": "CLIENT",
+        "script": "node index.js",
+        "instances": 1,
+        "autorestart": true,
+        "env_development": {
+          "NODE_ENV": "development",
+          "API_SERVICE_DNS": "http://localhost:3000"
+        }
+      }
+    ]
+  }
+  
