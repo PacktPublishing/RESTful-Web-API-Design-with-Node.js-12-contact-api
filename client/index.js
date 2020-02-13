@@ -35,6 +35,84 @@ app.get("/", (req, res) => {
   });
 });
 
+// handle sign in/up form submit responses
+app.post("/", async (req, res, next) => {
+  const token = req.query.token;
+
+  if (!token) {
+    return res.render("index", { auth: false, error: false });
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${API_SERVICE_DNS}/api/v2/contacts?offset=1&limit=5`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    const {
+      docs: { data: contacts },
+      totalDocs,
+      page,
+      totalPages,
+      hasNextPage,
+      nextPage,
+      hasPrevPage,
+      prevPage,
+      pagingCounter
+    } = data;
+
+    return res.render("index", {
+      token,
+      contacts: contacts.map(ct => ct.data),
+      auth: true,
+      error: false
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/signup", async (req, res) => {
+  const { firstname, lastname, email, password, phone } = req.body;
+
+  const user = {
+    firstName: firstname,
+    lastName: lastname,
+    primaryEmailAddress: email,
+    primaryContactNumber: phone,
+    credential: { password }
+  };
+
+  try {
+    const {
+      data: { token }
+    } = await axios.post(`${API_SERVICE_DNS}/auth/sign-up`, user);
+
+    res.redirect(308, `/?token=${token}`);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/signin", async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const {
+      data: { token }
+    } = await axios.post(`${API_SERVICE_DNS}/auth/sign-in`, {
+      email,
+      password
+    });
+
+    res.redirect(308, `/?token=${token}`);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use((err, req, res, next) => {
   res
     .status(err.status || 500)

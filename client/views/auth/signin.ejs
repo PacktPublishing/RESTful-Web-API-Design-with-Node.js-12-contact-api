@@ -1,0 +1,28 @@
+<form id="signin" style="display: inline-block;" action="/signin" method="POST">
+  <legend class="btn-info">SIGN IN</legend>
+  <fieldset>
+    <div class="form-group">
+      <label for="signinEmail">Email address</label>
+      <input
+        type="email"
+        name="email"
+        class="form-control"
+        id="signinEmail"
+        aria-describedby="emailHelp"
+        placeholder="Enter email"
+      />
+    </div>
+    <div class="form-group">
+      <label for="signinPassword">Password</label>
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        id="signinPassword"
+        placeholder="Enter password"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </fieldset>
+</form>

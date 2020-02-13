@@ -20,5 +20,12 @@
     <% if(error) {%> 
       <%- include('error', { errorMessage: errorMessage }); %>
     <% } %>
+
+    <% if(!error && !auth) {%> 
+      <%- include('auth/signup', {}); %> 
+      <%- include('auth/signin', {}); %> 
+    <% } else if(auth) { %>
+      <h1>LOGGED IN !!!</h1>
+    <% } %>
   </body>
 </html>

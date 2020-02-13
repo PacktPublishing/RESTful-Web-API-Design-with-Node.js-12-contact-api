@@ -1,0 +1,18 @@
+<form id="signup" style="display: inline-block;" action="/signup" method="POST">
+  <legend class="btn-info">SIGN UP</legend>
+  <fieldset>
+    <%- include('../common/add-fields', {}); %>
+    <div class="form-group">
+      <label for="signupPassword">Password</label>
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        id="signupPassword"
+        placeholder="Enter password"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </fieldset>
+</form>
