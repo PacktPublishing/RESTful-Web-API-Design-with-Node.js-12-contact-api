@@ -113,6 +113,32 @@ app.post("/signin", async (req, res, next) => {
   }
 });
 
+app.post("/add-contact", async (req, res, next) => {
+  const token = req.query.token;
+  const { firstname, lastname, email, phone } = req.body;
+
+  const contact = {
+    firstName: firstname,
+    lastName: lastname,
+    primaryEmailAddress: email,
+    primaryContactNumber: phone
+  };
+
+  try {
+    const { data } = await axios.post(
+      `${API_SERVICE_DNS}/api/v2/contacts`,
+      contact,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    res.redirect(308, `/?token=${token}`);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use((err, req, res, next) => {
   res
     .status(err.status || 500)

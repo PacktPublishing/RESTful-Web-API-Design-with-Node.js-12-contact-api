@@ -27,6 +27,7 @@
     <% } else if(auth) { %>
       <h2>CONTACTS:</h2>
       <%- include('contacts/list', {}); %>
+      <%- include('contacts/add-contact', {token: token}); %>
     <% } %>
   </body>
 </html>
