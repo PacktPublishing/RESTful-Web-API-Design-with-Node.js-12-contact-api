@@ -27,10 +27,8 @@ export default class ServerConfig {
         this.registerMiddleware(mdlw);
       });
 
-    this.app.get("/", (req, res, next) => {
-      res.json({
-        message: "Server working"
-      });
+    this.app.get("/ping", (req, res, next) => {
+      res.send("pong");
     });
 
     routers &&

@@ -6,6 +6,7 @@ const axios = require("axios");
 
 const PORT = process.env.PORT || 5000;
 const API_SERVICE_DNS = process.env.API_SERVICE_DNS;
+const API_SERVICE_PORT = process.env.API_SERVICE_PORT;
 const app = express();
 
 app.use(cors());
@@ -45,7 +46,7 @@ app.post("/", async (req, res, next) => {
 
   try {
     const { data } = await axios.get(
-      `${API_SERVICE_DNS}/api/v2/contacts?offset=1&limit=5`,
+      `http://${API_SERVICE_DNS}:${API_SERVICE_PORT}/api/v2/contacts?offset=1&limit=5`,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
@@ -88,7 +89,10 @@ app.post("/signup", async (req, res) => {
   try {
     const {
       data: { token }
-    } = await axios.post(`${API_SERVICE_DNS}/auth/sign-up`, user);
+    } = await axios.post(
+      `http://${API_SERVICE_DNS}:${API_SERVICE_PORT}/auth/sign-up`,
+      user
+    );
 
     res.redirect(308, `/?token=${token}`);
   } catch (error) {
@@ -102,10 +106,13 @@ app.post("/signin", async (req, res, next) => {
   try {
     const {
       data: { token }
-    } = await axios.post(`${API_SERVICE_DNS}/auth/sign-in`, {
-      email,
-      password
-    });
+    } = await axios.post(
+      `http://${API_SERVICE_DNS}:${API_SERVICE_PORT}/auth/sign-in`,
+      {
+        email,
+        password
+      }
+    );
 
     res.redirect(308, `/?token=${token}`);
   } catch (error) {
@@ -126,7 +133,7 @@ app.post("/add-contact", async (req, res, next) => {
 
   try {
     const { data } = await axios.post(
-      `${API_SERVICE_DNS}/api/v2/contacts`,
+      `http://${API_SERVICE_DNS}:${API_SERVICE_PORT}/api/v2/contacts`,
       contact,
       {
         headers: { Authorization: `Bearer ${token}` }
