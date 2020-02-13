@@ -1,0 +1,14 @@
+<div>
+  <form
+    id="signup"
+    style="display: inline-block;"
+    action="/add-contact?token=<%= token %>"
+    method="POST"
+  >
+    <legend class="btn-info">ADD CONTACT</legend>
+    <fieldset>
+      <%- include('../common/add-fields', {}); %>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </fieldset>
+  </form>
+</div>

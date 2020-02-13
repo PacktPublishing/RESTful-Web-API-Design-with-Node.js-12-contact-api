@@ -25,7 +25,8 @@
       <%- include('auth/signup', {}); %> 
       <%- include('auth/signin', {}); %> 
     <% } else if(auth) { %>
-      <h1>LOGGED IN !!!</h1>
+      <h2>CONTACTS:</h2>
+      <%- include('contacts/list', {}); %>
     <% } %>
   </body>
 </html>
