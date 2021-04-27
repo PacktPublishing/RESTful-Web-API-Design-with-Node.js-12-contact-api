@@ -37,7 +37,7 @@
     "pm2": "^4.2.1",
     "rate-limit-redis": "^1.7.0",
     "faker": "^4.1.0",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "swagger-jsdoc": "^3.5.0",
     "swagger-ui-express": "^4.1.3"
   },
