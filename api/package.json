@@ -34,7 +34,7 @@
     "multer-gridfs-storage": "^4.0.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "pm2": "^4.2.1",
+    "pm2": "^5.2.0",
     "rate-limit-redis": "^1.7.0",
     "faker": "^4.1.0",
     "redis": "^2.8.0",
